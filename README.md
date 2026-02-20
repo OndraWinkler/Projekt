@@ -1,36 +1,114 @@
-# Práce s Git a GitHub
-## Zadání práce
-Tento repozitář si zkopírujte do svého počítače, bude sloužit jako základ projektu. 
-Vytvořte si veřejný repozitář na GitHub a propojte ho s lokálním repozitářem, tím co jste si zkopírovali. 
-Vypracujte **zadání programu**, zkuste v průbehu trackovat změny pomocí **git commit**. Po vypracování programu napište vlastní README dokument, který bude sloužit jako návod pro zprovoznění vašeho programu (zapojení, stažení souborů, upravení konfiguračního souboru, nahrání na RPI pico...), nezapomeňte na soubor .gitignore, jelikož se v programu nacházi **API klíč, který nesmí být zveřejněn!!**, případně ignoruje soubory generované vývojovým prostředím jako například .vscode . 
-Váš výsledek nahrajte do GitHub repozitáře.
+Weather API – Raspberry Pi / MicroPython
+Popis projektu
 
-### Zadání programu
-Program bude zahrnovat práci s API a LCD displejem, konfigurační soubor  bude ukládat v libovolném formátu údaje pro přihlášení k WiFi a API klíč. Spouštěcí soubor pro program bude main.py, program zhotovte pro platformu raspberry pi pico w.
+Tento skript se připojí k Wi-Fi síti, odešle HTTP požadavek na API služby OpenWeatherMap a vypíše aktuální meteorologická data pro Prahu (GPS souřadnice 50.0755, 14.4378).
 
-Každých 10 minut zjišťujte aktuální počasí na aktuální lokaci pomocí API OpenWeatherMap. Klíč, který máte v clasroom  je omezen na 1000 za den, při testování ostatních částí programu si prosím zkopírujte ukázková JSON data z dokumentace. Aktuální geologickou lokaci si zjistěte pomocí veřejné IP adresy prostřednicvím [IP API](https://ip-api.com), toto API je zdarma a nevyžaduje klíč.
+Program získává:
 
-Po zapnutí zařízení se ukáže "Connecting to WiFi", po připojení k síti se na displeji zobrazí na pár sekund aktuální souřadnice, poté bude displej ukazovat data o počasí, která vám přijdou vhodná. 
+    aktuální teplotu
 
-Zařiďte základní robustnost programu jako automatické připojení k síti po výpadku, či upozornění na špatná data z API. 
+    minimální a maximální teplotu
 
-### Úprava programu
-Pomocí funkce fork na GitHub přidejte do kódu vaší dvojice funkcionalitu aktuálního času, na displej přidejte aktuální čas formátovaný HH:MM:SS synchronizovaného pomocí NTP, případně uvolněte pro tento údaj místo na displeji, poté využijte funkci contribute pro aktualizování repozitáře autora. Ověřte funkčnost.
+    průměrnou teplotu
 
-### Hodnocení
-Bude hodnoceno za 5 pouze při neplnění činosti na hodínách Dpr.
+    vlhkost vzduchu
+
+    atmosférický tlak
+
+Použité technologie
+
+    Python / MicroPython
+
+    requests
+
+    network
+
+    API služba OpenWeatherMap
+
+API klíč
+
+Pro správné fungování je nutné mít vlastní API klíč ze služby:
+
+    https://openweathermap.org/
+
+Po registraci vlož svůj klíč do proměnné:
+
+    token = "TVŮJ_API_KLÍČ"
 
 
+!!!Nikdy nesdílej svůj API klíč veřejně!!!
+Doporučuje se použít .gitignore, aby se klíč nenahrál do repozitáře.
+
+URL požadavek
+
+Program používá následující endpoint:
+
+    https://api.openweathermap.org/data/2.5/weather
 
 
+Parametry:
+
+    lat – zeměpisná šířka
+
+    lon – zeměpisná délka
+
+    units=metric – teplota v °C
+
+    appid – API klíč
+
+Spuštění programu
+
+Uprav Wi-Fi údaje:
+
+    ssid = 'NAZEV_SITE'
+    password = 'HESLO'
 
 
+Vlož vlastní API klíč.
 
+Spusť skript:
 
+    python main.py
 
+Výstup programu
 
+Příklad výstupu:
 
+    temperature: 21.5 C
+    avreage:     20.8 C
+    humidity:    63 RH%
+    pressure:    1012 hPa
 
+Struktura získaných dat (JSON)
 
-### pozor
-v github máte tlačítko copilot, umí programovat lépe než chatgpt, tak alespoň využívejte ty správné nástroje.
+Program čte hodnoty z odpovědi:
+
+    raw["main"]["temp"]
+    raw["main"]["temp_max"]
+    raw["main"]["temp_min"]
+    raw["main"]["pressure"]
+    raw["main"]["humidity"]
+
+!Možné chyby!
+
+    invalid request – špatný API klíč
+
+    request failed – problém s internetem nebo připojením Wi-Fi
+
+    Status code ≠ 200 – server odmítl požadavek
+
+Možná rozšíření
+
+    Zobrazení dat na LCD
+
+    Odesílání dat přes MQTT
+
+    Logování do souboru
+
+    Automatické aktualizace v intervalu
+
+    Přidání předpovědi počasí (/forecast endpoint)
+
+Autor
+
+Projekt vytvořen pro výuku práce s API, Git a GitHub.
